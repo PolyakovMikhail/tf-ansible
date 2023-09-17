@@ -15,8 +15,8 @@ resource "yandex_compute_instance" "vm-ha" {
   name = "vm-ha"
   hostname = "vm-ha"
   resources {
-    cores  = 1
-    memory = 0.5
+    cores  = 2
+    memory = 2
   }
   boot_disk {
     initialize_params {
@@ -37,8 +37,8 @@ resource "yandex_compute_instance" "vm-backend1" {
   name = "vm-backend1"
   hostname = "vm-backend1"
   resources {
-    cores  = 1
-    memory = 0.5
+    cores  = 2
+    memory = 2
   }
   boot_disk {
     initialize_params {
@@ -59,8 +59,8 @@ resource "yandex_compute_instance" "vm-backend2" {
   name = "vm-backend2"
   hostname = "vm-backend2"
   resources {
-    cores  = 1
-    memory = 0.5
+    cores  = 2
+    memory = 2
   }
   boot_disk {
     initialize_params {
@@ -81,8 +81,8 @@ resource "yandex_compute_instance" "vm-backend3" {
   name = "vm-backend3"
   hostname = "vm-backend3"
   resources {
-    cores  = 1
-    memory = 0.5
+    cores  = 2
+    memory = 2
   }
   boot_disk {
     initialize_params {
@@ -114,8 +114,8 @@ resource "yandex_compute_instance" "vm-ctrl" {
   name = "vm-ctrl"
   hostname="vm-ctrl"
   resources {
-    cores  = 1
-    memory = 0.5
+    cores  = 2
+    memory = 2
   }
   boot_disk {
     initialize_params {
