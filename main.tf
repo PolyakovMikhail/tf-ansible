@@ -150,7 +150,7 @@ resource "yandex_compute_instance" "vm-ctrl" {
     destination="/tmp"
   }
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u user -i self.public_ip --private-key ${var.ssh_key_private} site.yml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u user -i self.public_ip --private-key ${var.ssh_key_private} /tmp/ansible/site.yml"
   }
 }
 
