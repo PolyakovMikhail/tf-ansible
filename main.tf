@@ -24,6 +24,7 @@ resource "yandex_compute_instance" "vm-ctrl" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
+	ip_address = 192.168.10.10
     nat       = true
   }
   metadata = {
@@ -45,6 +46,7 @@ resource "yandex_compute_instance" "vm-ha" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
+	ip_address = 192.168.10.11
     nat       = true
   }
   metadata = {
@@ -66,6 +68,7 @@ resource "yandex_compute_instance" "vm-backend1" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
+	ip_address = 192.168.10.12
     nat       = true
   }
   metadata = {
@@ -87,6 +90,7 @@ resource "yandex_compute_instance" "vm-backend2" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
+	ip_address = 192.168.10.13
     nat       = true
   }
   metadata = {
@@ -108,6 +112,7 @@ resource "yandex_compute_instance" "vm-backend3" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
+	ip_address = 192.168.10.14
     nat       = true
   }
   metadata = {
@@ -116,11 +121,11 @@ resource "yandex_compute_instance" "vm-backend3" {
 }
 
 resource "yandex_vpc_network" "network-1" {
-  name = "network1"
+  name = "network-1"
 }
 
 resource "yandex_vpc_subnet" "subnet-1" {
-  name           = "subnet1"
+  name           = "subnet-1"
   zone           = "ru-central1-a"
   network_id     = vpc_network.network-1.id
   v4_cidr_blocks = ["192.168.10.0/24"]
