@@ -4,11 +4,11 @@ terraform {
       source = "yandex-cloud/yandex"
     }
   }
+  required_version = ">= 0.13"
 }
 
 provider "yandex" {
   zone = "ru-central1-a"
-}
 
 resource "yandex_compute_instance" "vm-ctrl" {
   name = "vm-ctrl"
@@ -24,7 +24,7 @@ resource "yandex_compute_instance" "vm-ctrl" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
-	ip_address = 192.168.10.10
+	ip_address = "192.168.10.10"
     nat       = true
   }
   metadata = {
@@ -46,7 +46,7 @@ resource "yandex_compute_instance" "vm-ha" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
-	ip_address = 192.168.10.11
+	ip_address = "192.168.10.11"
     nat       = true
   }
   metadata = {
@@ -68,7 +68,7 @@ resource "yandex_compute_instance" "vm-backend1" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
-	ip_address = 192.168.10.12
+	ip_address = "192.168.10.12"
     nat       = true
   }
   metadata = {
@@ -90,7 +90,7 @@ resource "yandex_compute_instance" "vm-backend2" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
-	ip_address = 192.168.10.13
+	ip_address = "192.168.10.13"
     nat       = true
   }
   metadata = {
@@ -112,7 +112,7 @@ resource "yandex_compute_instance" "vm-backend3" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
-	ip_address = 192.168.10.14
+	ip_address = "192.168.10.14"
     nat       = true
   }
   metadata = {
@@ -169,4 +169,6 @@ output "external_ip_address_vm_backend2" {
 
 output "external_ip_address_vm_backend3" {
   value = yandex_compute_instance.vm-backend3.network_interface.0.nat_ip_address
+}
+
 }
