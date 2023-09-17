@@ -28,7 +28,17 @@ resource "yandex_compute_instance" "vm-ctrl" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
+    ssh-keys = "${file("~/.ssh/id_rsa.pub")}"
+  }
+  provisioner "file" {
+	source="scripts/vm-ctrl.sh"
+	destination="/tmp/vm-ctrl.sh"
+  }
+  provisioner "remote-exec" {
+	inline=[
+	"chmod +x /tmp/vm-ctrl.sh",
+	"sudo /tmp/vm-ctrl.sh"
+	]
   }
 }
 
@@ -50,7 +60,7 @@ resource "yandex_compute_instance" "vm-ha" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
+    ssh-keys = "${file("~/.ssh/id_rsa.pub")}"
   }
 }
 
@@ -72,7 +82,7 @@ resource "yandex_compute_instance" "vm-backend1" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
+    ssh-keys = "${file("~/.ssh/id_rsa.pub")}"
   }
 }
 
@@ -94,7 +104,7 @@ resource "yandex_compute_instance" "vm-backend2" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
+    ssh-keys = "${file("~/.ssh/id_rsa.pub")}"
   }
 }
 
@@ -116,7 +126,7 @@ resource "yandex_compute_instance" "vm-backend3" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
+    ssh-keys = "${file("~/.ssh/id_rsa.pub")}"
   }
 }
 
@@ -129,6 +139,21 @@ resource "yandex_vpc_subnet" "subnet-1" {
   zone           = "ru-central1-a"
   network_id     = vpc_network.network-1.id
   v4_cidr_blocks = ["192.168.10.0/24"]
+}
+
+resource "yandex_compute_instance" "vm-ctrl" {
+  provisioner "file" {
+    source="ansible/"
+    destination="/tmp"
+  }
+  connection {
+      type        = "ssh"
+      user        = "user"
+      private_key = "${file(var.ssh_key_private)}"
+    }
+  provisioner "local-exec" {
+    command = "ansible-playbook -u user -i '${self.public_ip},' --private-key ${var.ssh_key_private} /tmp/site.yml"
+  }
 }
 
 output "internal_ip_address_vm_ctrl" {
