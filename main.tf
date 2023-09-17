@@ -120,7 +120,7 @@ resource "yandex_compute_instance" "vm-ctrl" {
   connection {
       type = "ssh"
       host = yandex_compute_instance.vm-ctrl.network_interface.0.nat_ip_address
-      private_key = "${file(var.ssh_key_private)}"
+      private_key = "centos:${file(var.ssh_key_private)}"
   }
   boot_disk {
     initialize_params {
