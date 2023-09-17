@@ -29,7 +29,7 @@ resource "yandex_compute_instance" "vm-ha" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "${file("~/.ssh/id_rsa.pub")}"
+    ssh-keys = "${file("~/.ssh/id_ed25519.pub")}"
   }
 }
 
@@ -51,7 +51,7 @@ resource "yandex_compute_instance" "vm-backend1" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "${file("~/.ssh/id_rsa.pub")}"
+    ssh-keys = "${file("~/.ssh/id_ed25519.pub")}"
   }
 }
 
@@ -73,7 +73,7 @@ resource "yandex_compute_instance" "vm-backend2" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "${file("~/.ssh/id_rsa.pub")}"
+    ssh-keys = "${file("~/.ssh/id_ed25519.pub")}"
   }
 }
 
@@ -95,7 +95,7 @@ resource "yandex_compute_instance" "vm-backend3" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "${file("~/.ssh/id_rsa.pub")}"
+    ssh-keys = "${file("~/.ssh/id_ed25519.pub")}"
   }
 }
 
@@ -117,6 +117,11 @@ resource "yandex_compute_instance" "vm-ctrl" {
     cores  = 2
     memory = 2
   }
+  connection {
+      type = "ssh"
+      host = yandex_compute_instance.vm-ctrl.network_interface.0.nat_ip_address
+      private_key = "${file(var.ssh_key_private)}"
+  }
   boot_disk {
     initialize_params {
       image_id = "fd80le4b8gt2u33lvubr"
@@ -128,7 +133,7 @@ resource "yandex_compute_instance" "vm-ctrl" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "${file("~/.ssh/id_rsa.pub")}"
+    ssh-keys = "${file("~/.ssh/id_ed25519.pub")}"
   }
   provisioner "file" {
 	source="scripts/vm-ctrl.sh"
@@ -143,12 +148,6 @@ resource "yandex_compute_instance" "vm-ctrl" {
   provisioner "file" {
     source="ansible/"
     destination="/tmp"
-  }
-  connection {
-      type = "ssh"
-      host = "192.168.10.10"
-      user = "user"
-      private_key = "${file(var.ssh_key_private)}"
   }
   provisioner "local-exec" {
     command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u user -i self.public_ip --private-key ${var.ssh_key_private} site.yml"

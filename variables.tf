@@ -1,3 +1,3 @@
 variable "ssh_key_private" {
-  default     = "./terra_ansible"
+  default     = "~/.ssh/id_ed25519"
 }
