@@ -29,7 +29,7 @@ resource "yandex_compute_instance" "vm-ha" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "${file("~/.ssh/id_ed25519.pub")}"
+    ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
   }
 }
 
@@ -51,7 +51,7 @@ resource "yandex_compute_instance" "vm-backend1" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "${file("~/.ssh/id_ed25519.pub")}"
+    ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
   }
 }
 
@@ -73,7 +73,7 @@ resource "yandex_compute_instance" "vm-backend2" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "${file("~/.ssh/id_ed25519.pub")}"
+    ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
   }
 }
 
@@ -95,7 +95,7 @@ resource "yandex_compute_instance" "vm-backend3" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "${file("~/.ssh/id_ed25519.pub")}"
+    ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
   }
 }
 
@@ -133,7 +133,7 @@ resource "yandex_compute_instance" "vm-ctrl" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "${file("~/.ssh/id_ed25519.pub")}"
+    ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
   }
   provisioner "file" {
 	source="scripts/vm-ctrl.sh"
@@ -150,7 +150,7 @@ resource "yandex_compute_instance" "vm-ctrl" {
     destination="/tmp"
   }
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u user -i self.public_ip --private-key ${var.ssh_key_private} /tmp/ansible/site.yml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u user -i self.public_ip --private-key ${var.ssh_key_private} site.yml"
   }
 }
 
