@@ -25,7 +25,7 @@ resource "yandex_compute_instance" "vm-ha" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
-	ip_address = "192.168.10.11"
+        ip_address = "192.168.10.11"
     nat       = true
   }
   metadata = {
@@ -47,7 +47,7 @@ resource "yandex_compute_instance" "vm-backend1" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
-	ip_address = "192.168.10.12"
+        ip_address = "192.168.10.12"
     nat       = true
   }
   metadata = {
@@ -69,7 +69,7 @@ resource "yandex_compute_instance" "vm-backend2" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
-	ip_address = "192.168.10.13"
+        ip_address = "192.168.10.13"
     nat       = true
   }
   metadata = {
@@ -91,7 +91,7 @@ resource "yandex_compute_instance" "vm-backend3" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
-	ip_address = "192.168.10.14"
+        ip_address = "192.168.10.14"
     nat       = true
   }
   metadata = {
@@ -130,24 +130,27 @@ resource "yandex_compute_instance" "vm-ctrl" {
   }
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
-	ip_address = "192.168.10.10"
+        ip_address = "192.168.10.10"
     nat       = true
   }
   metadata = {
     ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
   }
   provisioner "file" {
-	source="scripts/vm-ctrl.sh"
-	destination="/tmp/vm-ctrl.sh"
+        source="scripts/vm-ctrl.sh"
+        destination="/tmp/vm-ctrl.sh"
+  }
+  provisioner "file" {
+		source="~/.ssh/id_ed25519"
+		destination="/tmp/id_ed25519"
   }
   provisioner "remote-exec" {
-	inline=[
-	"chmod +x /tmp/vm-ctrl.sh",
-	"sudo /tmp/vm-ctrl.sh"
-	]
-  }
-  provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -i self.public_ip --private-key $private_key site.yml"
+        inline=[
+        "chmod +x /tmp/vm-ctrl.sh",
+        "sudo /tmp/vm-ctrl.sh",
+		"chmod 0600 id_ed25519",
+		"/bin/sh -c "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -i inventory --private-key id_ed25519 site.yml""
+        ]
   }
 }
 
