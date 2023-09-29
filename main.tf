@@ -119,8 +119,9 @@ resource "yandex_compute_instance" "vm-ctrl" {
   }
   connection {
       type = "ssh"
+      user = "centos"
       host = yandex_compute_instance.vm-ctrl.network_interface.0.nat_ip_address
-      private_key = "centos:${file(var.ssh_key_private)}"
+      private_key = file("~/.ssh/id_ed25519")
   }
   boot_disk {
     initialize_params {
@@ -145,12 +146,8 @@ resource "yandex_compute_instance" "vm-ctrl" {
 	"sudo /tmp/vm-ctrl.sh"
 	]
   }
-  provisioner "file" {
-    source="ansible/"
-    destination="/tmp"
-  }
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u user -i self.public_ip --private-key ${var.ssh_key_private} site.yml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -i self.public_ip --private-key $private_key site.yml"
   }
 }
 
