@@ -158,6 +158,7 @@ resource "yandex_compute_instance" "vm-ctrl" {
   }
 }
 
+
 output "internal_ip_address_vm_ctrl" {
   value = yandex_compute_instance.vm-ctrl.network_interface.0.ip_address
 }
