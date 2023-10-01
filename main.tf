@@ -48,7 +48,7 @@ resource "yandex_compute_instance" "vm-backend1" {
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
         ip_address = "192.168.10.12"
-    nat       = true
+    nat       = false
   }
   metadata = {
     ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
@@ -70,7 +70,7 @@ resource "yandex_compute_instance" "vm-backend2" {
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
         ip_address = "192.168.10.13"
-    nat       = true
+    nat       = false
   }
   metadata = {
     ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
@@ -92,7 +92,7 @@ resource "yandex_compute_instance" "vm-backend3" {
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
         ip_address = "192.168.10.14"
-    nat       = true
+    nat       = false
   }
   metadata = {
     ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
@@ -141,19 +141,19 @@ resource "yandex_compute_instance" "vm-ctrl" {
         destination="/tmp/vm-ctrl.sh"
   }
   provisioner "file" {
-	source="~/.ssh/id_ed25519"
-	destination="/tmp/id_ed25519"
+		source="~/.ssh/id_ed25519"
+		destination="/tmp/id_ed25519"
   }
   provisioner "file" {
-	source="ansible/"
-	destination="/tmp"
+		source="ansible/"
+		destination="/tmp"
   }
   provisioner "remote-exec" {
         inline=[
         "chmod +x /tmp/vm-ctrl.sh",
         "sudo /tmp/vm-ctrl.sh",
-	"chmod 0600 /tmp/id_ed25519",
-	"/bin/sh -c 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -i /tmp/inventory --private-key /tmp/id_ed25519 /tmp/site.yml'"
+		"chmod 0600 /tmp/id_ed25519",
+		"/bin/sh -c 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -i /tmp/inventory --private-key /tmp/id_ed25519 /tmp/site.yml'"
         ]
   }
 }
