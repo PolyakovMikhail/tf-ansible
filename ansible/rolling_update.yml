@@ -7,10 +7,6 @@
 # will be applied as part of the rolling update process.
 #
 
-# gather facts from monitoring nodes for iptables rules
-- hosts: monitoring
-  tasks: []
-
 - hosts: webservers
   remote_user: root
   serial: 1

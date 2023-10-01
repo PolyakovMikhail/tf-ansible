@@ -6,9 +6,8 @@
   with_items:
    - git
 
-- name: Configure SELinux to allow httpd to connect to remote database
+- name: Configure SELinux to allow httpd to connect
   seboolean: name=httpd_can_network_connect_db state=true persistent=yes
-  when: sestatus.rc != 0
 
 - name: Copy the code from repository
   git: repo={{ repository }} dest=/var/www/html/

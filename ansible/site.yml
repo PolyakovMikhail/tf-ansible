@@ -1,7 +1,9 @@
 ---
 # Apply common configuration to all hosts
 - hosts: all
-  remote_user: root
+  become: yes
+  become_method: sudo
+  become_user: root
   roles:
   - common
 
@@ -9,13 +11,17 @@
 # the 'base-apache' role which simply sets up Apache, and 'web' which includes
 # our example web application.
 - hosts: webservers
-  remote_user: root
+  become: yes
+  become_method: sudo
+  become_user: root
   roles:
   - base-apache
   - web
 
 # Configure and deploy the load balancer(s).
 - hosts: lbservers
-  remote_user: root
+  become: yes
+  become_method: sudo
+  become_user: root
   roles:
   - haproxy

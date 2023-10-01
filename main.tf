@@ -141,15 +141,19 @@ resource "yandex_compute_instance" "vm-ctrl" {
         destination="/tmp/vm-ctrl.sh"
   }
   provisioner "file" {
-		source="~/.ssh/id_ed25519"
-		destination="/tmp/id_ed25519"
+	source="~/.ssh/id_ed25519"
+	destination="/tmp/id_ed25519"
+  }
+  provisioner "file" {
+	source="ansible/"
+	destination="/tmp"
   }
   provisioner "remote-exec" {
         inline=[
         "chmod +x /tmp/vm-ctrl.sh",
         "sudo /tmp/vm-ctrl.sh",
-		"chmod 0600 id_ed25519",
-		"/bin/sh -c 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -i inventory --private-key id_ed25519 site.yml'"
+	"chmod 0600 /tmp/id_ed25519",
+	"/bin/sh -c 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -i inventory --private-key id_ed25519 site.yml'"
         ]
   }
 }
