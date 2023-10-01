@@ -9,6 +9,7 @@ terraform {
 
 provider "yandex" {
   zone = "ru-central1-a"
+<<<<<<< HEAD
 
 resource "yandex_compute_instance" "vm-ctrl" {
   name = "vm-ctrl"
@@ -30,6 +31,8 @@ resource "yandex_compute_instance" "vm-ctrl" {
   metadata = {
     ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
   }
+=======
+>>>>>>> 4d2689d... 	modified:   main.tf
 }
 
 resource "yandex_compute_instance" "vm-ha" {
@@ -127,10 +130,58 @@ resource "yandex_vpc_network" "network-1" {
 resource "yandex_vpc_subnet" "subnet-1" {
   name           = "subnet-1"
   zone           = "ru-central1-a"
-  network_id     = vpc_network.network-1.id
+  network_id     = yandex_vpc_network.network-1.id
   v4_cidr_blocks = ["192.168.10.0/24"]
 }
 
+<<<<<<< HEAD
+=======
+resource "yandex_compute_instance" "vm-ctrl" {
+  name = "vm-ctrl"
+  hostname="vm-ctrl"
+  resources {
+    cores  = 1
+    memory = 0.5
+  }
+  boot_disk {
+    initialize_params {
+      image_id = "fd80le4b8gt2u33lvubr"
+    }
+  }
+  network_interface {
+    subnet_id = yandex_vpc_subnet.subnet-1.id
+	ip_address = "192.168.10.10"
+    nat       = true
+  }
+  metadata = {
+    ssh-keys = "${file("~/.ssh/id_rsa.pub")}"
+  }
+  provisioner "file" {
+	source="scripts/vm-ctrl.sh"
+	destination="/tmp/vm-ctrl.sh"
+  }
+  provisioner "remote-exec" {
+	inline=[
+	"chmod +x /tmp/vm-ctrl.sh",
+	"sudo /tmp/vm-ctrl.sh"
+	]
+  }
+  provisioner "file" {
+    source="ansible/"
+    destination="/tmp"
+  }
+  connection {
+      type = "ssh"
+      host = "192.168.10.10"
+      user = "user"
+      private_key = "${file(var.ssh_key_private)}"
+  }
+  provisioner "local-exec" {
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u user -i self.public_ip --private-key ${var.ssh_key_private} site.yml"
+  }
+}
+
+>>>>>>> 4d2689d... 	modified:   main.tf
 output "internal_ip_address_vm_ctrl" {
   value = yandex_compute_instance.vm-ctrl.network_interface.0.ip_address
 }
@@ -169,6 +220,4 @@ output "external_ip_address_vm_backend2" {
 
 output "external_ip_address_vm_backend3" {
   value = yandex_compute_instance.vm-backend3.network_interface.0.nat_ip_address
-}
-
 }
