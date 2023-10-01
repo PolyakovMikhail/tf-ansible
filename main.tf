@@ -9,38 +9,14 @@ terraform {
 
 provider "yandex" {
   zone = "ru-central1-a"
-<<<<<<< HEAD
-
-resource "yandex_compute_instance" "vm-ctrl" {
-  name = "vm-ctrl"
-  hostname="vm-ctrl"
-  resources {
-    cores  = 1
-    memory = 0.5
-  }
-  boot_disk {
-    initialize_params {
-      image_id = "fd80le4b8gt2u33lvubr"
-    }
-  }
-  network_interface {
-    subnet_id = yandex_vpc_subnet.subnet-1.id
-	ip_address = "192.168.10.10"
-    nat       = true
-  }
-  metadata = {
-    ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
-  }
-=======
->>>>>>> 4d2689d... 	modified:   main.tf
 }
 
 resource "yandex_compute_instance" "vm-ha" {
   name = "vm-ha"
   hostname = "vm-ha"
   resources {
-    cores  = 1
-    memory = 0.5
+    cores  = 2
+    memory = 2
   }
   boot_disk {
     initialize_params {
@@ -61,8 +37,8 @@ resource "yandex_compute_instance" "vm-backend1" {
   name = "vm-backend1"
   hostname = "vm-backend1"
   resources {
-    cores  = 1
-    memory = 0.5
+    cores  = 2
+    memory = 2
   }
   boot_disk {
     initialize_params {
@@ -83,8 +59,8 @@ resource "yandex_compute_instance" "vm-backend2" {
   name = "vm-backend2"
   hostname = "vm-backend2"
   resources {
-    cores  = 1
-    memory = 0.5
+    cores  = 2
+    memory = 2
   }
   boot_disk {
     initialize_params {
@@ -105,8 +81,8 @@ resource "yandex_compute_instance" "vm-backend3" {
   name = "vm-backend3"
   hostname = "vm-backend3"
   resources {
-    cores  = 1
-    memory = 0.5
+    cores  = 2
+    memory = 2
   }
   boot_disk {
     initialize_params {
@@ -134,14 +110,18 @@ resource "yandex_vpc_subnet" "subnet-1" {
   v4_cidr_blocks = ["192.168.10.0/24"]
 }
 
-<<<<<<< HEAD
-=======
 resource "yandex_compute_instance" "vm-ctrl" {
   name = "vm-ctrl"
   hostname="vm-ctrl"
   resources {
-    cores  = 1
-    memory = 0.5
+    cores  = 2
+    memory = 2
+  }
+  connection {
+      type = "ssh"
+      user = "centos"
+      host = yandex_compute_instance.vm-ctrl.network_interface.0.nat_ip_address
+      private_key = file("~/.ssh/id_ed25519")
   }
   boot_disk {
     initialize_params {
@@ -154,34 +134,32 @@ resource "yandex_compute_instance" "vm-ctrl" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "${file("~/.ssh/id_rsa.pub")}"
+    ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
   }
   provisioner "file" {
 	source="scripts/vm-ctrl.sh"
 	destination="/tmp/vm-ctrl.sh"
   }
   provisioner "remote-exec" {
+<<<<<<< HEAD
 	inline=[
 	"chmod +x /tmp/vm-ctrl.sh",
 	"sudo /tmp/vm-ctrl.sh"
 	]
   }
-  provisioner "file" {
-    source="ansible/"
-    destination="/tmp"
-  }
-  connection {
-      type = "ssh"
-      host = "192.168.10.10"
-      user = "user"
-      private_key = "${file(var.ssh_key_private)}"
-  }
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u user -i self.public_ip --private-key ${var.ssh_key_private} site.yml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -i self.public_ip --private-key $private_key site.yml"
+=======
+        inline=[
+        "chmod +x /tmp/vm-ctrl.sh",
+        "sudo /tmp/vm-ctrl.sh",
+		"chmod 0600 id_ed25519",
+		"/bin/sh -c 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -i inventory --private-key id_ed25519 site.yml'"
+        ]
+>>>>>>> 2754cc6... 	modified:   main.tf
   }
 }
 
->>>>>>> 4d2689d... 	modified:   main.tf
 output "internal_ip_address_vm_ctrl" {
   value = yandex_compute_instance.vm-ctrl.network_interface.0.ip_address
 }

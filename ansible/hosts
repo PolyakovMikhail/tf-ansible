@@ -1,0 +1,7 @@
+[webservers]
+vm-backend1
+vm-backend2
+vm-backend3
+
+[lbservers]
+vm-ha
