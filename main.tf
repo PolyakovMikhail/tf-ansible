@@ -153,7 +153,7 @@ resource "yandex_compute_instance" "vm-ctrl" {
         "chmod +x /tmp/vm-ctrl.sh",
         "sudo /tmp/vm-ctrl.sh",
 	"chmod 0600 /tmp/id_ed25519",
-	"/bin/sh -c 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -i inventory --private-key id_ed25519 site.yml'"
+	"/bin/sh -c 'ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -i /tmp/inventory --private-key /tmp/id_ed25519 /tmp/site.yml'"
         ]
   }
 }

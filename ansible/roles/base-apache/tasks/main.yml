@@ -7,5 +7,12 @@
    - httpd
    - php
 
+- name: Copy apache php conf
+  copy:
+   src: /tmp/php.conf
+   dest: /etc/httpd/conf.d/php.conf
+   owner: root
+   group: root
+
 - name: http service state
   service: name=httpd state=started enabled=yes
