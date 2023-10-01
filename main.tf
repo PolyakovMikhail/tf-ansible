@@ -48,7 +48,7 @@ resource "yandex_compute_instance" "vm-backend1" {
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
         ip_address = "192.168.10.12"
-    nat       = false
+    nat       = true
   }
   metadata = {
     ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
@@ -70,7 +70,7 @@ resource "yandex_compute_instance" "vm-backend2" {
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
         ip_address = "192.168.10.13"
-    nat       = false
+    nat       = true
   }
   metadata = {
     ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
@@ -92,7 +92,7 @@ resource "yandex_compute_instance" "vm-backend3" {
   network_interface {
     subnet_id = yandex_vpc_subnet.subnet-1.id
         ip_address = "192.168.10.14"
-    nat       = false
+    nat       = true
   }
   metadata = {
     ssh-keys = "centos:${file("~/.ssh/id_ed25519.pub")}"
